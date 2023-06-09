@@ -7,7 +7,6 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 const Questions = () => {
   const [remainingTime, setRemainingTime] = useState<number>(15)
-  const [timer] = useState< number | undefined >(undefined);
 
   const dispatch = useAppDispatch();
   const { quizz } = useAppSelector( state => state );
@@ -15,12 +14,10 @@ const Questions = () => {
 
 
   const handleAnswerSelect = (userAnswerText:string) => {
-    clearInterval(timer); // Stop the timer
     dispatch(selectAnswer(userAnswerText));
   };
 
   const handleNextQuestion = () => {
-    clearInterval(timer); // Stop the timer
     dispatch(nextQuestion());
     setRemainingTime(15); // Reset the timer to 5 seconds
   };
@@ -59,7 +56,7 @@ const Questions = () => {
 
       {quizz?.currentAnswer ? (
           <div onClick={handleNextQuestion} className="next-button">
-            Next question
+            Next Question
           </div>
         ) : (
           <div className="disable-button">

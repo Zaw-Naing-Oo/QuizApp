@@ -1,19 +1,7 @@
 import React, { useEffect } from 'react'
 import correctAudio from "../assets/Audio/correct.wav"
 import wrongAudio from "../assets/Audio/wrong.wav"
-
-interface AnswerText {
-  id: string;
-  value: string;
-}
-
-interface AnswerProp {
-  answerText: AnswerText;
-  index: number;
-  onSelectAnswer: (answerText: string) => void;
-  currentAnswer: string | null;
-  correctAnswer: string | null;
-}
+import { AnswerProp } from '../utils/type'
 
 const Answer = ({ answerText, index, onSelectAnswer, currentAnswer, correctAnswer }: AnswerProp) => {
   
@@ -29,23 +17,29 @@ const Answer = ({ answerText, index, onSelectAnswer, currentAnswer, correctAnswe
 
 
   useEffect(() => {
-    if (forCorrectAudio) {
-      const audio = new Audio(correctAudio);
+
+    const playAudio = (audioSrc: string | undefined) => {
+      const audio = new Audio(audioSrc);
       audio.play();
+      return audio;
+    };
+
+    let audio: HTMLMediaElement | undefined;
+
+      if (forCorrectAudio) {
+        audio = playAudio(correctAudio);
+      }
+
+      if (isWrongAnswer) {
+        audio = playAudio(wrongAudio);
+      }
+
       return () => {
-        audio.pause();
-        audio.currentTime = 0;
+        if (audio && audio instanceof HTMLMediaElement) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
       };
-    }
-  
-    if (isWrongAnswer) {
-      const audio = new Audio(wrongAudio);
-      audio.play();
-      return () => {
-        audio.pause();
-        audio.currentTime = 0;
-      };
-    }
   }, [forCorrectAudio, isWrongAnswer]);
   
   
